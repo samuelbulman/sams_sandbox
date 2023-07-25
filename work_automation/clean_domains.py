@@ -290,6 +290,7 @@ website_domain_suffixes_list = [
 clean_domain_list_1 = []
 clean_domain_list_2 = []
 clean_domain_list_3 = []
+clean_domain_list_4 = []
 
 # first, strip the protocol and www. from the domain
 for raw_domain in raw_domain_list:
@@ -326,16 +327,27 @@ for cleaned_domain in clean_domain_list_2:
             break
         # if the country code is not in the cleaned domain, and we've fully looped through the list of country codes, add the domain that is being looped on to the clean domain list 3
         else:
-            # - 1 because we are starting at 0
+            # subtract 1 from length of list because we are starting at 0
             if counter == len(domain_country_codes_list) - 1:
                 clean_domain_list_3.append(cleaned_domain)
                 break
         counter += 1
 
-#print('-- last iteration of clean domain list --', clean_domain_list_3, sep='\n')
+# lastly, wrap domains in single quotes and add a comma after each domain except for the last domain
+final_step_counter = 0
+for clean_domain in clean_domain_list_3:
+    if final_step_counter < len(clean_domain_list_3) - 1:
+        clean_domain = "'" + clean_domain + "',"
+        clean_domain_list_4.append(clean_domain)
+    elif final_step_counter == len(clean_domain_list_3) - 1:
+        clean_domain = "'" + clean_domain + "'"
+        clean_domain_list_4.append(clean_domain)
+    final_step_counter += 1
+
+#print('-- last iteration of clean domain list --', clean_domain_list_4, sep='\n')
 
 # add the cleaned domains into the empty 'cleaned_company_domain' column in your csv file
-csv_df['cleaned_company_domain'] = clean_domain_list_3
+csv_df['cleaned_company_domain'] = clean_domain_list_4
 
 # finally, store a data frame with the original company domain and the cleaned company domain
 csv_df = csv_df[['company_domain', 'cleaned_company_domain']]
